@@ -10,7 +10,7 @@ class App extends Component {
   //   }
   // };
     state = {
-      lists: this.props.store.lists
+      store: this.props.store
     }
 
     omit(obj, keyToOmit) {
@@ -34,14 +34,14 @@ class App extends Component {
 
     handleNewClick = (listId) => {
       const newCard = this.newRandomCard();
-      this.props.store.allCards[newCard.id] = newCard;
+      //this.state.store.allCards[newCard.id] = newCard;
       this.setState({
-        lists: this.state.lists.map(list => {
+        store: {lists: this.state.store.lists.map(list => {
           if (list.id === listId){
             list.cardIds.push(newCard.id);
           }
           return list;
-        })
+        }), allCards: { ...this.state.store.allCards, [newCard.id]: newCard }}
       })
 
     }
@@ -49,13 +49,13 @@ class App extends Component {
 
   handleDeleteClick = (cardId) => {
     this.setState({ 
-      lists: this.state.lists.map(list => {
+      store:{lists: this.state.store.lists.map(list => {
         //console.log(list.cardIds); 
         list.cardIds = list.cardIds.filter(item => item!==cardId);
         return list
-      })
-    })
-    this.props.store.allCards = this.omit(this.props.store.allCards, cardId);
+      }), allCards: this.omit(this.state.store.allCards, cardId)
+    }})
+    
 }
 
   render() {
@@ -65,12 +65,12 @@ class App extends Component {
           <h1>Trelloyes!</h1>
         </header>
         <div className='App-list'>
-          {this.state.lists.map(list => (
+          {this.state.store.lists.map(list => (
             <List
               key={list.id}
               id={list.id}
               header={list.header}
-              cards={list.cardIds.map(id => this.props.store.allCards[id])}
+              cards={list.cardIds.map(id => this.state.store.allCards[id])}
               newCard = {this.handleNewClick}
               deleteCard={this.handleDeleteClick}
             />
