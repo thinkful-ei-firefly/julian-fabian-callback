@@ -20,28 +20,45 @@ class App extends Component {
         {}
       );
     }
+
+    newRandomCard = () => {
+      const id = Math.random().toString(36).substring(2, 4)
+        + Math.random().toString(36).substring(2, 4);
+      return {
+        id,
+        title: `Random Card ${id}`,
+        content: 'lorem ipsum',
+      }
+    }
+
+
+    handleNewClick = (listId) => {
+      const newCard = this.newRandomCard();
+      this.props.store.allCards[newCard.id] = newCard;
+      this.setState({
+        lists: this.state.lists.map(list => {
+          if (list.id === listId){
+            list.cardIds.push(newCard.id);
+          }
+          return list;
+        })
+      })
+
+    }
     
 
   handleDeleteClick = (cardId) => {
-    console.log(cardId);
-    console.log(this.state.lists)
-  //   this.state.store.lists.map(list => {console.log(list.cardIds); 
-  //   list.cardIds = list.cardIds.filter(item => item!==cardId);
-  //   return list
-  // });
-
-    console.log(this.state.lists)
-  
-      this.setState({ 
-      lists: this.state.lists.map(list => {console.log(list.cardIds); 
-      list.cardIds = list.cardIds.filter(item => item!==cardId);
-      return list
+    this.setState({ 
+      lists: this.state.lists.map(list => {
+        //console.log(list.cardIds); 
+        list.cardIds = list.cardIds.filter(item => item!==cardId);
+        return list
       })
     })
+    this.props.store.allCards = this.omit(this.props.store.allCards, cardId);
 }
 
   render() {
-    //const { store } = this.props
     return (
       <main className='App'>
         <header className='App-header'>
@@ -51,8 +68,10 @@ class App extends Component {
           {this.state.lists.map(list => (
             <List
               key={list.id}
+              id={list.id}
               header={list.header}
               cards={list.cardIds.map(id => this.props.store.allCards[id])}
+              newCard = {this.handleNewClick}
               deleteCard={this.handleDeleteClick}
             />
           ))}
