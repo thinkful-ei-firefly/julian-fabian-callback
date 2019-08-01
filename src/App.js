@@ -10,7 +10,7 @@ class App extends Component {
   //   }
   // };
     state = {
-      store: this.props.store
+      lists: this.props.store.lists
     }
 
     omit(obj, keyToOmit) {
@@ -24,16 +24,16 @@ class App extends Component {
 
   handleDeleteClick = (cardId) => {
     console.log(cardId);
-    console.log(this.state.store.lists)
+    console.log(this.state.lists)
   //   this.state.store.lists.map(list => {console.log(list.cardIds); 
   //   list.cardIds = list.cardIds.filter(item => item!==cardId);
   //   return list
   // });
 
-    console.log(this.state.store.lists)
+    console.log(this.state.lists)
   
       this.setState({ 
-      store: this.state.store.lists.map(list => {console.log(list.cardIds); 
+      lists: this.state.lists.map(list => {console.log(list.cardIds); 
       list.cardIds = list.cardIds.filter(item => item!==cardId);
       return list
       })
@@ -48,11 +48,11 @@ class App extends Component {
           <h1>Trelloyes!</h1>
         </header>
         <div className='App-list'>
-          {this.state.store.lists.map(list => (
+          {this.state.lists.map(list => (
             <List
               key={list.id}
               header={list.header}
-              cards={list.cardIds.map(id => this.state.store.allCards[id])}
+              cards={list.cardIds.map(id => this.props.store.allCards[id])}
               deleteCard={this.handleDeleteClick}
             />
           ))}
